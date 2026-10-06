@@ -1,0 +1,17 @@
+name: Subscribe MAX Webhook
+
+on:
+  workflow_dispatch:
+
+jobs:
+  subscribe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Subscribe webhook
+        env:
+          MAX_TOKEN: ${{ secrets.MAX_TOKEN }}
+          WEBHOOK_URL: https://max-image-bot.onrender.com/webhook
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: python subscribe.py
