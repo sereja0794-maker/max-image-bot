@@ -6,9 +6,16 @@ on:
 jobs:
   subscribe:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Download MinDigital certificate
+        run: |
+          curl -k -L \
+            "https://gu-st.ru/content/Other/doc/russiantrustedca.pem" \
+            -o russiantrustedca.pem
+
       - name: Subscribe webhook
         env:
           MAX_TOKEN: ${{ secrets.MAX_TOKEN }}
@@ -16,6 +23,7 @@ jobs:
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
           curl --fail --show-error --location \
+            --cacert russiantrustedca.pem \
             -X POST "https://platform-api2.max.ru/subscriptions" \
             -H "Authorization: $MAX_TOKEN" \
             -H "Content-Type: application/json" \
