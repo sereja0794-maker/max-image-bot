@@ -9,12 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install dependency
-        run: python -m pip install httpx
-        
       - name: Subscribe webhook
         env:
           MAX_TOKEN: ${{ secrets.MAX_TOKEN }}
           WEBHOOK_URL: https://max-image-bot.onrender.com/webhook
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-        run: python subscribe.py
+        run: |
+          curl --fail --show-error --location \
+            -X POST "https://platform-api2.max.ru/subscriptions" \
+            -H "Authorization: $MAX_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "{\"url\":\"$WEBHOOK_URL\",\"update_types\":[\"message_created\",\"bot_started\"],\"secret\":\"$WEBHOOK_SECRET\"}"
